@@ -1,0 +1,35 @@
+@import "../colors.scss";
+
+.buttonBox {
+  display: flex;
+  justify-content: space-between;
+
+  .button {
+    width: 6rem;
+    height: 2.2rem;
+
+    .buttonDiv {
+      width: inherit;
+      height: inherit;
+      background-color: $gray300;
+      border: 2px solid $gray300;
+      color: black;
+      border-radius: 0.5rem;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+
+      &:hover {
+        border: 2px solid $gray200;
+        background-color: $gray200;
+      }
+
+      &:disabled {
+        background-color: $gray400;
+        border: 2px solid $gray400;
+        cursor: default;
+      }
+    }
+  }
+}

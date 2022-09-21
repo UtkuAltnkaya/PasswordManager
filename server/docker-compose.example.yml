@@ -1,0 +1,9 @@
+version: '3.4'
+services:
+  passwordDb:
+    image: postgres
+    ports:
+      - -:-
+    environment:
+      - POSTGRES_USER=-
+      - POSTGRES_PASSWORD=-

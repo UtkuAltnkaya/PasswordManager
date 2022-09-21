@@ -1,0 +1,48 @@
+@import "../colors.scss";
+
+.formItem {
+  position: relative;
+  height: 3rem;
+
+  .input {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    border: 1px solid $oldLavender;
+    border-radius: 0.4rem;
+    color: white;
+    padding: 1.2rem;
+    outline: none;
+    font-family: inherit;
+    font-size: 16px;
+    transition: color 100ms ease-in;
+
+    // &:focus {
+    //   border: 2px solid var(--yellow);
+    // }
+    // &:hover {
+    //   border: 2px solid #ffef82;
+    // }
+    &:focus~.label,
+    &:not(:placeholder-shown).input:not(:focus)~.label {
+      top: -0.5rem;
+      font-size: 14px;
+      left: 0.8rem;
+    }
+  }
+
+  .label {
+    cursor: pointer;
+    position: absolute;
+    padding: 0 0.5rem;
+    left: 0.5rem;
+    top: 0.9rem;
+    color: white;
+    transition: top 100ms ease-in, font-size 100ms ease-in, left 100ms ease-in;
+    background-color: black;
+  }
+}

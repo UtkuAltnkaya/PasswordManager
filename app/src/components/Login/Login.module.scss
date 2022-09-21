@@ -1,0 +1,25 @@
+@import "../../style/Auth/input.scss";
+@import "../../style/Auth/button.scss";
+
+.form {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  min-width: 250px;
+  min-height: 308px;
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
+  background-color: black;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  .title {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 900;
+  }
+}
