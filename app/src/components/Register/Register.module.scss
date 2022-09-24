@@ -15,10 +15,16 @@
   gap: 1.5rem;
   background-color: black;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  min-height: 455px;
 
   .title {
     padding: 0.5rem;
     font-size: 1.2rem;
     font-weight: 900;
   }
+}
+
+.full {
+  width: 100% !important;
+  height: 100% !important;
 }

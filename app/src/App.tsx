@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useRoutes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import Private from 'components/tools/Private';
 import Public from 'components/tools/Public';
@@ -45,6 +46,17 @@ function App() {
   return (
     <>
       {element}
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <ReactQueryDevtools initialIsOpen={false} />
     </>
   );

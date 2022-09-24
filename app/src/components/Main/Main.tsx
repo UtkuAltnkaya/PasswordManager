@@ -30,11 +30,10 @@ const Main = ({ data }: Props) => {
     <>
       <div className={style.main}>
         <AddItem color={color} />
-        <div className={style.itemDiv}>
-          {data.message.password_list.map((item) => (
-            <MainItem key={item.id} pass={item} color={color} />
-          ))}
-        </div>
+
+        {data.message.password_list.map((item) => (
+          <MainItem key={item.id} pass={item} color={color} />
+        ))}
       </div>
     </>
   );

@@ -37,7 +37,7 @@ func (db UserConnection) CreateUser(user *models.User) helpers.Message[string] {
 	user.Password = hashPassword
 	tx := db.Create(user)
 	if tx.Error != nil {
-		return helpers.NewMessage(tx.Error.Error(), false)
+		return helpers.NewMessage("User already exist", false)
 	}
 	return helpers.NewMessage("User created", true)
 
@@ -69,7 +69,7 @@ func (db UserConnection) AddPassword(userId, site string, length int) helpers.Me
 	var item models.Passwords
 	db.Where("password_name_id = ? AND user_id = ?", passwordNames.ID, userId).First(&item)
 	if len(item.Password) != 0 {
-		return helpers.NewMessage[interface{}](fmt.Sprintf("%v is already exist", site), true)
+		return helpers.NewMessage[interface{}](fmt.Sprintf("%v is already exist", site), false)
 	}
 	item = models.Passwords{
 		PasswordNameId: passwordNames.ID,

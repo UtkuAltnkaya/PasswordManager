@@ -4,6 +4,8 @@ import { MainContext } from 'context/provider';
 import { FormEvent, useContext, useState } from 'react';
 import { RequestToServer } from 'services/Api';
 import style from './Register.module.scss';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterInput {
   username: string;
@@ -19,26 +21,37 @@ const Register = () => {
   });
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const { setUser } = useContext(MainContext);
+  const navigate = useNavigate();
 
-  const data = useMutation((item: any) => RequestToServer({ url: 'login', method: 'POST', data: item }), {
+  const data = useMutation((item: any) => RequestToServer({ url: 'register', method: 'POST', data: item }), {
     onSuccess: () => {
       setUser(true);
     },
   });
 
-  const handleRegister = (e: FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
-    if (item.password === passwordConfirm) {
-      //TODO Error
-      return;
+    if (item.password !== passwordConfirm) {
+      return toast.error('Passwords does not match');
     }
-    data.mutate({ item });
+    try {
+      await data.mutateAsync({ ...item });
+      if (data.isSuccess) {
+        return navigate('/');
+      }
+    } catch (error) {
+      console.log(error);
+
+      return toast.error(error.message);
+    }
   };
 
   return (
     <form className={style.form} onSubmit={handleRegister}>
-      {data.isLoading ? (
-        <Loader />
+      {!data.isLoading ? (
+        <div className={style.formItem + style.full}>
+          <Loader />
+        </div>
       ) : (
         <>
           <div className={style.title}>Register</div>

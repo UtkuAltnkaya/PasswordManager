@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import Loader from 'components/Loader/Loader';
 import { MainContext } from 'context/provider';
+import { toast } from 'react-toastify';
 
-import { FormEvent, useContext, useEffect, useState } from 'react';
+import { FormEvent, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RequestToServer } from 'services/Api';
 import style from './Login.module.scss';
@@ -18,22 +19,22 @@ const Login = () => {
       setUser(true);
     },
   });
-  const handleLogin = (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-
-    data.mutate({ email, password });
-  };
-
-  useEffect(() => {
-    if (data.isSuccess) {
-      return navigate('/');
+    try {
+      await data.mutateAsync({ email, password });
+      if (data.isSuccess) {
+        navigate('/');
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
-  }, [data.isSuccess, navigate]);
+  };
 
   return (
     <form className={style.form} onSubmit={handleLogin}>
       {data.isLoading ? (
-        <div className={style.formItem}>
+        <div className={style.formItem + style.full}>
           <Loader />
         </div>
       ) : (
