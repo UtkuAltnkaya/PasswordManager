@@ -1,5 +1,6 @@
 import Data from 'models/data';
 import User from 'models/user';
+import AddItem from './AddItem';
 import style from './Main.module.scss';
 import MainItem from './MainItem';
 
@@ -26,11 +27,16 @@ const Main = ({ data }: Props) => {
   // const color = useMemo(() => colors.random(), [colors]);
 
   return (
-    <div className={style.main}>
-      {data.message.password_list.map((item) => (
-        <MainItem key={item.id} pass={item} color={color} />
-      ))}
-    </div>
+    <>
+      <div className={style.main}>
+        <AddItem color={color} />
+        <div className={style.itemDiv}>
+          {data.message.password_list.map((item) => (
+            <MainItem key={item.id} pass={item} color={color} />
+          ))}
+        </div>
+      </div>
+    </>
   );
 };
 
