@@ -57,7 +57,6 @@ func LoginValidate(c *fiber.Ctx) error {
 }
 
 func ValidateLogin(c *fiber.Ctx) error {
-
 	token, err := helpers.VerifyToken(c.Cookies("token"))
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(helpers.NewMessage(err.Error(), false))

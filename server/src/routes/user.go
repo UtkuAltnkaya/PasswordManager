@@ -17,6 +17,7 @@ func (user UserRouter) UserRoute(app *fiber.App) {
 	app.Post("/logout", user.Logout)
 	app.Post("/login", middlewares.LoginValidate, user.Login)
 	app.Post("/generatePassword", middlewares.ValidateLogin, user.NewPassword)
+	app.Post("/changeSitePassword", middlewares.ValidateLogin, user.ChangeSitePassword)
 	app.Get("/getUser", middlewares.ValidateLogin, user.GetUser)
 	app.Get("/getPassword", middlewares.ValidateLogin, user.GetPassword)
 }

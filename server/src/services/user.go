@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserConnection struct {
@@ -20,6 +21,7 @@ type UserService interface {
 	CreateUser(*models.User) helpers.Message[string]
 	SignUser(*models.User) helpers.Message[string]
 	AddPassword(string, string, int) helpers.Message[interface{}]
+	UpdateSitePassword(string, string, int) helpers.Message[interface{}]
 	GetUserPassword(string, string) helpers.Message[interface{}]
 	GetUserInfo(string) helpers.Message[interface{}]
 	getPasswordName(string) models.PasswordNames
@@ -82,6 +84,30 @@ func (db UserConnection) AddPassword(userId, site string, length int) helpers.Me
 	}
 	item.PasswordName = passwordNames
 	item.Password = string(password.Password)
+	return helpers.NewMessage[interface{}](item, true)
+}
+
+func (db UserConnection) UpdateSitePassword(userId, site string, length int) helpers.Message[interface{}] {
+	passwordNames := db.getPasswordName(site)
+	if len(passwordNames.Name) == 0 {
+		return helpers.NewMessage[interface{}]("Site not found", false)
+	}
+	password := hash.NewPassword(length)
+	encrypted, err := password.Encrypt([]byte(os.Getenv("SALT")))
+	if err != nil {
+		return helpers.NewMessage[interface{}](err.Error(), false)
+	}
+	item := models.Passwords{
+		Password: hex.EncodeToString(encrypted),
+	}
+
+	tx := db.Model(&item).Clauses(clause.Returning{}).Where("password_name_id = ? AND user_id = ?", passwordNames.ID, userId).Update("Password", item.Password)
+	if tx.Error != nil {
+		return helpers.NewMessage[interface{}](tx.Error.Error(), false)
+	}
+
+	item.Password = string(password.Password)
+	item.PasswordName = passwordNames
 	return helpers.NewMessage[interface{}](item, true)
 }
 

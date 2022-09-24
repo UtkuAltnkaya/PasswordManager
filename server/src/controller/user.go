@@ -87,6 +87,31 @@ func (u UserController) NewPassword(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(password)
 }
 
+func (u UserController) ChangeSitePassword(c *fiber.Ctx) error {
+	body := NewPassBody{}
+	if err := c.BodyParser(&body); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage(err.Error(), false))
+	}
+	if len(body.Site) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage("Site is required", false))
+	}
+	if body.Length == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage("Length is required", false))
+	}
+	userId := ""
+	c.Request().Header.VisitAll(func(key, value []byte) {
+		if string(key) == "Userid" {
+			userId = string(value)
+		}
+	})
+	password := u.UpdateSitePassword(userId, body.Site, body.Length)
+	if !password.Success {
+		return c.Status(fiber.StatusInternalServerError).JSON(password)
+	}
+	return c.Status(fiber.StatusOK).JSON(password)
+
+}
+
 func (u UserController) GetPassword(c *fiber.Ctx) error {
 	queryParams := c.Query("site")
 	if queryParams == "" {

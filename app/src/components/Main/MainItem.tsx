@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import Data from 'models/data';
 import Password from 'models/password';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { RequestToServer } from 'services/Api';
 import style from './Main.module.scss';
 
@@ -30,12 +31,15 @@ const MainItem = ({ pass, color }: Props) => {
     setOpen(false);
   };
   const handleCopy = () => {
-    //TODo
+    if (open) {
+      navigator.clipboard.writeText(item?.message?.password);
+      toast.info('Password copied to click board');
+    }
   };
 
   return (
     <div key={pass.id} className={style.item} style={{ backgroundColor: color }}>
-      <div className={style.title} onClick={handleCopy}>
+      <div className={style.title} style={{ cursor: open ? 'pointer' : 'auto' }} onClick={handleCopy}>
         {pass.password_name.name}
       </div>
       <div onClick={handleClick} className={style.password}>
