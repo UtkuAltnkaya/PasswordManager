@@ -1,5 +1,6 @@
 import Data from 'models/data';
 import User from 'models/user';
+import { useMemo } from 'react';
 import AddItem from './AddItem';
 import style from './Main.module.scss';
 import MainItem from './MainItem';
@@ -24,18 +25,21 @@ const colors = {
 const color = colors.random();
 
 const Main = ({ data }: Props) => {
-  // const color = useMemo(() => colors.random(), [colors]);
+  const items = useMemo(
+    () =>
+      data.message.password_list.sort((a: any, b: any) =>
+        a.password_name.name < b.password_name.name ? -1 : a.password_name.name > b.password_name.name ? 1 : 0,
+      ),
+    [data.message.password_list.length],
+  );
 
   return (
-    <>
-      <div className={style.main}>
-        <AddItem color={color} />
-
-        {data.message.password_list.map((item) => (
-          <MainItem key={item.id} pass={item} color={color} />
-        ))}
-      </div>
-    </>
+    <div className={style.main}>
+      <AddItem color={color} />
+      {items.map((item) => (
+        <MainItem key={item.id} pass={item} color={color} />
+      ))}
+    </div>
   );
 };
 

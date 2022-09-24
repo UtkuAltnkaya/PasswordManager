@@ -40,15 +40,13 @@ const Register = () => {
         return navigate('/');
       }
     } catch (error) {
-      console.log(error);
-
       return toast.error(error.message);
     }
   };
 
   return (
     <form className={style.form} onSubmit={handleRegister}>
-      {!data.isLoading ? (
+      {data.isLoading ? (
         <div className={style.formItem + style.full}>
           <Loader />
         </div>

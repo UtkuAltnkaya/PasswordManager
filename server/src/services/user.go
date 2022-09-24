@@ -1,5 +1,6 @@
 package services
 
+//TODO Support for multiple accounts
 import (
 	"encoding/hex"
 	"fmt"
@@ -136,9 +137,10 @@ func (db UserConnection) GetUserPassword(query, userId string) helpers.Message[i
 
 func (db UserConnection) GetUserInfo(userId string) helpers.Message[interface{}] {
 	var user models.User
-	tx := db.Where("id = ?", userId).Preload("PasswordList", func(db *gorm.DB) *gorm.DB {
-		return db.Select([]string{"id", "password_name_id", "user_id"}).Preload("PasswordName")
-	}).First(&user)
+	tx := db.Where("id = ?", userId).Preload("PasswordList.PasswordName").Preload("PasswordList", func(db *gorm.DB) *gorm.DB {
+		return db.Select([]string{"id", "password_name_id", "user_id"})
+	}).Find(&user)
+
 	if tx.Error != nil {
 		return helpers.NewMessage[interface{}](tx.Error.Error(), false)
 	}
