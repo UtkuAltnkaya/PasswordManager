@@ -25,3 +25,9 @@ type PasswordNames struct {
 	ID   uuid.UUID `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Name string    `json:"name" gorm:"unique;not null"`
 }
+
+// type SubPasswords struct {
+// 	ID       uuid.UUID `json:"id" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+// 	Name     string    `json:"name" gorm:"unique;not null"`
+// 	Password string    `json:"password" gorm:"not null"`
+// }

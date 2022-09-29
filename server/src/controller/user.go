@@ -74,12 +74,8 @@ func (u UserController) NewPassword(c *fiber.Ctx) error {
 	if body.Length == 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage("Length is required", false))
 	}
-	userId := ""
-	c.Request().Header.VisitAll(func(key, value []byte) {
-		if string(key) == "Userid" {
-			userId = string(value)
-		}
-	})
+	userId := getUserId(c)
+
 	password := u.AddPassword(userId, body.Site, body.Length)
 	if !password.Success {
 		return c.Status(fiber.StatusInternalServerError).JSON(password)
@@ -98,18 +94,28 @@ func (u UserController) ChangeSitePassword(c *fiber.Ctx) error {
 	if body.Length == 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage("Length is required", false))
 	}
-	userId := ""
-	c.Request().Header.VisitAll(func(key, value []byte) {
-		if string(key) == "Userid" {
-			userId = string(value)
-		}
-	})
+	userId := getUserId(c)
+
 	password := u.UpdateSitePassword(userId, body.Site, body.Length)
 	if !password.Success {
 		return c.Status(fiber.StatusInternalServerError).JSON(password)
 	}
 	return c.Status(fiber.StatusOK).JSON(password)
+}
 
+func (u UserController) RemoveSitePassword(c *fiber.Ctx) error {
+	queryParams := c.Query("site")
+	if queryParams == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage("Site is required", false))
+	}
+	userId := getUserId(c)
+
+	pass := u.DeleteSitePassword(userId, queryParams)
+
+	if !pass.Success {
+		return c.Status(fiber.StatusInternalServerError).JSON(pass)
+	}
+	return c.Status(fiber.StatusOK).JSON(pass)
 }
 
 func (u UserController) GetPassword(c *fiber.Ctx) error {
@@ -117,12 +123,8 @@ func (u UserController) GetPassword(c *fiber.Ctx) error {
 	if queryParams == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(helpers.NewMessage("Site is required", false))
 	}
-	var userId string
-	c.Request().Header.VisitAll(func(key, value []byte) {
-		if string(key) == "Userid" {
-			userId = string(value)
-		}
-	})
+	userId := getUserId(c)
+
 	password := u.GetUserPassword(queryParams, userId)
 	if !password.Success {
 		return c.Status(fiber.StatusInternalServerError).JSON(password)
@@ -131,13 +133,7 @@ func (u UserController) GetPassword(c *fiber.Ctx) error {
 }
 
 func (u UserController) GetUser(c *fiber.Ctx) error {
-
-	var userId string
-	c.Request().Header.VisitAll(func(key, value []byte) {
-		if string(key) == "Userid" {
-			userId = string(value)
-		}
-	})
+	userId := getUserId(c)
 	user := u.GetUserInfo(userId)
 	if !user.Success {
 		return c.Status(fiber.StatusInternalServerError).JSON(user)
@@ -152,4 +148,14 @@ func (u UserController) Logout(c *fiber.Ctx) error {
 	}
 	c.Cookie(&fiber.Cookie{Name: "token", Value: "", Expires: time.Now().Add(-time.Hour), HTTPOnly: true})
 	return c.Status(fiber.StatusOK).JSON(helpers.NewMessage("Logged out", true))
+}
+
+func getUserId(c *fiber.Ctx) string {
+	var userId string
+	c.Request().Header.VisitAll(func(key, value []byte) {
+		if string(key) == "Userid" {
+			userId = string(value)
+		}
+	})
+	return userId
 }

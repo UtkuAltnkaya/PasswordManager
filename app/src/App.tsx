@@ -1,17 +1,23 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useContext } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useRoutes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { AnimatePresence } from 'framer-motion';
 
 import Private from 'components/tools/Private';
 import Public from 'components/tools/Public';
 import Loader from 'components/Loader/Loader';
+import { MainContext } from 'context/provider';
+import UpdateConfirm from 'components/Confirm/UpdateConfirm';
+import DeleteConfirm from 'components/Confirm/DeleteConfirm';
 
 const Register = lazy(() => import('components/Register/Register'));
 const Login = lazy(() => import('components/Login/Login'));
 const Main = lazy(() => import('components/Main/Main'));
 
 function App() {
+  const { updateModal, deleteModal } = useContext(MainContext);
+
   const element = useRoutes([
     {
       path: '/',
@@ -57,6 +63,8 @@ function App() {
         draggable
         pauseOnHover
       />
+      <AnimatePresence>{updateModal.open && <UpdateConfirm />}</AnimatePresence>
+      <AnimatePresence>{deleteModal.open && <DeleteConfirm />}</AnimatePresence>
       <ReactQueryDevtools initialIsOpen={false} />
     </>
   );

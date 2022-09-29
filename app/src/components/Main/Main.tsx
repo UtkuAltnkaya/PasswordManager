@@ -25,13 +25,12 @@ const colors = {
 const color = colors.random();
 
 const Main = ({ data }: Props) => {
-  const items = useMemo(
-    () =>
-      data.message.password_list.sort((a: any, b: any) =>
-        a.password_name.name < b.password_name.name ? -1 : a.password_name.name > b.password_name.name ? 1 : 0,
-      ),
-    [data.message.password_list.length],
-  );
+  const items = useMemo(() => {
+    return data.message.password_list.sort((a: any, b: any) =>
+      a.password_name.name < b.password_name.name ? -1 : a.password_name.name > b.password_name.name ? 1 : 0,
+    );
+    // eslint-disable-next-line
+  }, [data.message.password_list.length]);
 
   return (
     <div className={style.main}>

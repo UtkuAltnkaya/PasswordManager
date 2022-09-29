@@ -23,6 +23,7 @@ type UserService interface {
 	SignUser(*models.User) helpers.Message[string]
 	AddPassword(string, string, int) helpers.Message[interface{}]
 	UpdateSitePassword(string, string, int) helpers.Message[interface{}]
+	DeleteSitePassword(string, string) helpers.Message[string]
 	GetUserPassword(string, string) helpers.Message[interface{}]
 	GetUserInfo(string) helpers.Message[interface{}]
 	getPasswordName(string) models.PasswordNames
@@ -110,6 +111,22 @@ func (db UserConnection) UpdateSitePassword(userId, site string, length int) hel
 	item.Password = string(password.Password)
 	item.PasswordName = passwordNames
 	return helpers.NewMessage[interface{}](item, true)
+}
+
+func (db UserConnection) DeleteSitePassword(userId, site string) helpers.Message[string] {
+	passwordNames := db.getPasswordName(site)
+	if len(passwordNames.Name) == 0 {
+		return helpers.NewMessage("Site not found", false)
+	}
+	password := models.Passwords{
+		PasswordNameId: passwordNames.ID,
+		UserId:         uuid.MustParse(userId),
+	}
+	tx := db.Where("password_name_id = ? AND user_id = ?", passwordNames.ID, userId).Delete(&password)
+	if tx.Error != nil {
+		return helpers.NewMessage(tx.Error.Error(), false)
+	}
+	return helpers.NewMessage("Password deleted", true)
 }
 
 func (db UserConnection) GetUserPassword(query, userId string) helpers.Message[interface{}] {

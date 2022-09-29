@@ -19,9 +19,7 @@ const AddItem = ({ color }: Props) => {
   const data = useMutation<Data<Password>, Data<string>, any>(
     (item: any) => RequestToServer({ url: 'generatePassword', method: 'POST', data: item }),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['user']);
-      },
+      onSuccess: () => queryClient.invalidateQueries(['user']),
     },
   );
 
